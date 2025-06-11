@@ -173,7 +173,7 @@ int main()
       printf("\nSaindo do programa. Ate logo!\n");
       break;
     default:
-      printf("\nOpcao inválida! Por favor, tente novamente.\n");
+      printf("\nOpcao invalida! Por favor, tente novamente.\n");
     }
   } while (opcao != 0);
 
