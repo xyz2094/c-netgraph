@@ -32,7 +32,7 @@ gcc -std=c99 -Wall computerNetworks.c -o graph_network_manager
 
 ### On Windows (MinGW)
 ```bash
-gcc -std=c99 -Wall computerNetworks.c -o graph_network_manager.exe
+gcc computerNetworks.c -o graph_network_manager.exe
 graph_network_manager.exe
 ```
 
