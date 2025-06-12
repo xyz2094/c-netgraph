@@ -1,181 +1,192 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 
+// Define the number of vertices (computers) in the graph
 #define V 8
 
-int grafo[V][V];
+// The graph is represented by an adjacency matrix
+int graph[V][V];
 
-void inicializarGrafo();
-void adicionarAresta(int u, int v, int peso);
-void removerAresta(int u, int v);
-void imprimirMatriz();
-void DFS_util(int v, int visitado[]);
-void DFS(int v);
+// Function prototypes
+void initializeGraph();
+void addEdge(int u, int v, int weight);
+void removeEdge(int u, int v);
+void printMatrix();
+void DFS_util(int v, int visited[]);
+void DFS(int startNode);
 
-void inicializarGrafo()
+// Initializes the graph with no connections (all values set to 0)
+void initializeGraph()
 {
   for (int i = 0; i < V; i++)
   {
     for (int j = 0; j < V; j++)
     {
-      grafo[i][j] = 0;
+      graph[i][j] = 0;
     }
   }
 }
 
-void adicionarAresta(int u, int v, int peso)
+// Adds a connection (an edge) between two computers
+void addEdge(int u, int v, int weight)
 {
+  // Check if the vertices are valid
   if (u >= 0 && u < V && v >= 0 && v < V)
   {
-    grafo[u][v] = peso;
-    grafo[v][u] = peso;
-    printf("\n");
-    printf("Conexao entre os computadores %d e %d com custo %d foi adicionada.\n", u, v, peso);
+    // For an undirected graph, the connection is two-way
+    graph[u][v] = weight;
+    graph[v][u] = weight;
+    printf("\nConnection between computers %d and %d with cost %d has been added.\n", u, v, weight);
   }
   else
   {
-    printf("Erro: Vertice invalido! Use valores entre 0 e %d.\n", V - 1);
+    printf("Error: Invalid vertex! Use values between 0 and %d.\n", V - 1);
   }
 }
 
-void removerAresta(int u, int v)
+// Removes the connection between two computers
+void removeEdge(int u, int v)
 {
   if (u >= 0 && u < V && v >= 0 && v < V)
   {
-    if (grafo[u][v] == 0)
+    // Check if a connection actually exists
+    if (graph[u][v] == 0)
     {
-      printf("Nenhuma conexao para remover entre %d e %d.\n", u, v);
+      printf("No connection to remove between %d and %d.\n", u, v);
     }
     else
     {
-      grafo[u][v] = 0;
-      grafo[v][u] = 0;
-      printf("Conexao entre os computadores %d e %d foi removida.\n", u, v);
+      graph[u][v] = 0;
+      graph[v][u] = 0;
+      printf("Connection between computers %d and %d has been removed.\n", u, v);
     }
   }
   else
   {
-    printf("Erro: Vertice inválido!\n");
+    printf("Error: Invalid vertex!\n");
   }
 }
 
-void imprimirMatriz()
+// Prints the adjacency matrix of the network
+void printMatrix()
 {
-  printf("\n--- Matriz de Adjacencia da Rede (Custos) ---\n");
-  printf("     ");
+  printf("\n--- Network Adjacency Matrix (Costs) ---\n");
+  printf("       ");
   for (int i = 0; i < V; i++)
   {
     printf("[%d]  ", i);
   }
-  printf("\n");
-  printf("---------------------------------------------\n");
+  printf("\n---------------------------------------------\n");
 
   for (int i = 0; i < V; i++)
   {
     printf("[%d] | ", i);
     for (int j = 0; j < V; j++)
     {
-      printf(" %-3d ", grafo[i][j]);
+      printf(" %-3d ", graph[i][j]);
     }
     printf("\n");
   }
   printf("---------------------------------------------\n");
 }
 
-void DFS_util(int v, int visitado[])
+// A utility function used by DFS to perform the recursive traversal
+void DFS_util(int v, int visited[])
 {
-  visitado[v] = 1;
+  // Mark the current node as visited and print it
+  visited[v] = 1;
   printf("%d -> ", v);
 
+  // Recur for all adjacent vertices that have not been visited
   for (int i = 0; i < V; i++)
   {
-    if (grafo[v][i] != 0 && !visitado[i])
+    if (graph[v][i] != 0 && !visited[i])
     {
-      DFS_util(i, visitado);
+      DFS_util(i, visited);
     }
   }
 }
 
-void DFS(int v)
+// Performs Depth-First Search traversal starting from a given node
+void DFS(int startNode)
 {
-  if (v < 0 || v >= V)
+  if (startNode < 0 || startNode >= V)
   {
-    printf("Erro: Vertice inicial invalido!\n");
+    printf("Error: Invalid starting vertex!\n");
     return;
   }
 
-  int visitado[V] = {0};
+  // Array to keep track of visited nodes, initialized to 0 (false)
+  int visited[V] = {0};
 
-  printf("\nCaminho da Busca em Profundidade (DFS) a partir do computador %d:\n", v);
-  DFS_util(v, visitado);
-  printf("FIM\n");
+  printf("\nDepth-First Search (DFS) path starting from computer %d:\n", startNode);
+  DFS_util(startNode, visited);
+  printf("END\n");
 }
 
 int main()
 {
-  int opcao, u, v, peso, inicio_dfs;
+  int option, u, v, weight, start_node_dfs;
 
-  setlocale(LC_ALL, "");
+  initializeGraph();
 
-  inicializarGrafo();
+  // Pre-populate the graph with some initial connections
+  addEdge(0, 1, 5);
+  addEdge(0, 2, 10);
+  addEdge(1, 3, 8);
+  addEdge(2, 4, 15);
+  addEdge(2, 5, 4);
+  addEdge(3, 4, 7);
+  addEdge(4, 6, 9);
+  addEdge(5, 7, 12);
+  addEdge(6, 7, 3);
 
-  adicionarAresta(0, 1, 5);
-  adicionarAresta(0, 2, 10);
-  adicionarAresta(1, 3, 8);
-  adicionarAresta(2, 4, 15);
-  adicionarAresta(2, 5, 4);
-  adicionarAresta(3, 4, 7);
-  adicionarAresta(4, 6, 9);
-  adicionarAresta(5, 7, 12);
-  adicionarAresta(6, 7, 3);
-
-  printf("\n*** Sistema de Gerenciamento de Rede de Computadores ***\n");
+  printf("\n*** Computer Network Management System ***\n");
 
   do
   {
-    printf("\n--- MENU DE OPCOES ---\n\n");
-    printf("1. Adicionar Conexao (Aresta)\n");
-    printf("2. Remover Conexao (Aresta)\n");
-    printf("3. Visualizar Matriz da Rede\n");
-    printf("4. Rastrear Conectividade (Busca em Profundidade)\n");
-    printf("0. Sair\n");
-    printf("\nEscolha uma opcao: ");
-    scanf("%d", &opcao);
+    printf("\n--- OPTIONS MENU ---\n\n");
+    printf("1. Add Connection (Edge)\n");
+    printf("2. Remove Connection (Edge)\n");
+    printf("3. View Network Matrix\n");
+    printf("4. Trace Connectivity (Depth-First Search)\n");
+    printf("0. Exit\n");
+    printf("\nChoose an option: ");
+    scanf("%d", &option);
 
-    switch (opcao)
+    switch (option)
     {
     case 1:
-      printf("Digite o computador de origem (0 a %d): ", V - 1);
+      printf("Enter the source computer (0 to %d): ", V - 1);
       scanf("%d", &u);
-      printf("Digite o computador de destino (0 a %d): ", V - 1);
+      printf("Enter the destination computer (0 to %d): ", V - 1);
       scanf("%d", &v);
-      printf("Digite o custo da conexao: ");
-      scanf("%d", &peso);
-      adicionarAresta(u, v, peso);
+      printf("Enter the connection cost: ");
+      scanf("%d", &weight);
+      addEdge(u, v, weight);
       break;
     case 2:
-      printf("Digite o computador de origem (0 a %d): ", V - 1);
+      printf("Enter the source computer (0 to %d): ", V - 1);
       scanf("%d", &u);
-      printf("Digite o computador de destino (0 a %d): ", V - 1);
+      printf("Enter the destination computer (0 to %d): ", V - 1);
       scanf("%d", &v);
-      removerAresta(u, v);
+      removeEdge(u, v);
       break;
     case 3:
-      imprimirMatriz();
+      printMatrix();
       break;
     case 4:
-      printf("Digite o computador inicial para a busca (0 a %d): ", V - 1);
-      scanf("%d", &inicio_dfs);
-      DFS(inicio_dfs);
+      printf("Enter the starting computer for the search (0 to %d): ", V - 1);
+      scanf("%d", &start_node_dfs);
+      DFS(start_node_dfs);
       break;
     case 0:
-      printf("\nSaindo do programa. Ate logo!\n");
+      printf("\nExiting the program. Goodbye!\n");
       break;
     default:
-      printf("\nOpcao invalida! Por favor, tente novamente.\n");
+      printf("\nInvalid option! Please try again.\n");
     }
-  } while (opcao != 0);
+  } while (option != 0);
 
   return 0;
 }
