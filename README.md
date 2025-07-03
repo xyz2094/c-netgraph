@@ -1,5 +1,4 @@
-Graph-network manager in C
-==========================
+### Graph-network manager in C
 
 A small command-line utility—written in C that simulates
 a computer network of up to eight machines. It lets you 
