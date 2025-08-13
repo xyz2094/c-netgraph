@@ -12,5 +12,3 @@ How to run (using MinGW):
 > gcc computerNetworks.c -o computer_networks.exe
 > computer_networks.exe
 ```
-
-This project is licensed under the MIT License.
